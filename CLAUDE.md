@@ -16,11 +16,11 @@ The project follows a modular Python package structure:
 
 ```
 ai-notebook/
-├── src/               # Core source code module
-├── data_insight/      # Data analysis and insights generation
+├── src/               # Core source code module，trench宽和深的预测模型的训练、验证、测试代码
+├── data_insight/      # Data analysis and insights generation，看单个wafer各个步骤的统计学特征及不同wafer同一步骤的统计学特征
 ├── db/                # Database operations and connectors
 ├── utils/             # Utility functions and helpers
-├── wide_table/        # Wide table data processing (60+ parameter Excel sheets)
+├── wide_table/        # Wide table data processing，将wafer相关数据处理成大宽表
 ├── test/              # Test suite
 └── snippets/          # Code snippets and reference materials
 ```
