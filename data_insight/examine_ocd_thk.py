@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 # Define the source data directory
-source_data_dir = "E:/qingzhu/FAB/source_data"
+source_data_dir = "~/FAB/source_data"
 
 print("=== Examining OCD/THK indicators in etching-measurement.xlsx ===")
 

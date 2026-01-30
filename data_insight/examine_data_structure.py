@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 # Define the source data directory
-source_data_dir = "E:/qingzhu/FAB/source_data"
+source_data_dir = "~/FAB/source_data"
 
 print("=== Examining etching-measurement.xlsx ===")
 try:

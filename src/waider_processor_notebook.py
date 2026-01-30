@@ -18,7 +18,7 @@ from wide_table.wafer_data_processor import WaferDataProcessor
 class WaiderProcessorNotebook:
     """Notebook interface for wafer data processing with visualization capabilities."""
 
-    def __init__(self, source_data_path: str = "E:/qingzhu/FAB/source_data"):
+    def __init__(self, source_data_path: str = "~/FAB/source_data"):
         """Initialize with data paths."""
         self.processor = WaferDataProcessor(source_data_path)
         self.df_wide = None

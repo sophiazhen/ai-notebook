@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 # Define the source data directory
-source_data_dir = "E:/qingzhu/FAB/source_data"
+source_data_dir = "~/FAB/source_data"
 wafer_file = "WFR_300MM_20250126_L001.xlsx"
 
 print(f"=== Examining parameter data sheets in {wafer_file} ===")

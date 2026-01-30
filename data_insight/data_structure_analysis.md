@@ -4,7 +4,7 @@
 This report documents the structure of the source data Excel files for the FAB AI notebook project.
 
 ## File Locations
-All source files are located in: `E:/qingzhu/FAB/source_data/`
+All source files are located in: `~/FAB/source_data/`
 
 ## 1. Etching Measurement Data (`etching-measurement.xlsx`)
 

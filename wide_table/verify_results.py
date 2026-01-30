@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 
 # Check the results
-data_path = Path("E:/qingzhu/FAB/ai-notebook/data_output")
+data_path = Path("~/FAB/ai-notebook/data_output")
 
 # Read the wide table
 df = pd.read_excel(data_path / "processed_wide_table.xlsx")

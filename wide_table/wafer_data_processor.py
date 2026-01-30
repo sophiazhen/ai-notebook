@@ -26,7 +26,7 @@ warnings.filterwarnings('ignore')
 class WaferDataProcessor:
     """Processes wafer data from Excel files for ML model training."""
 
-    def __init__(self, source_data_path: str = "E:/qingzhu/FAB/source_data"):
+    def __init__(self, source_data_path: str = "~/FAB/source_data"):
         """
         Initialize the processor.
 
@@ -419,7 +419,7 @@ def main():
     print("Starting wafer data processing...")
 
     # Initialize processor
-    processor = WaferDataProcessor(source_data_path="E:/qingzhu/FAB/source_data")
+    processor = WaferDataProcessor(source_data_path="~/FAB/source_data")
 
     # Process all data
     df_result = processor.process_all_wafers()
