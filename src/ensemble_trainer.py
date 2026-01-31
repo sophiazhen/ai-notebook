@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from typing import Dict, List, Any, Optional, Tuple, Union
-from sklearn.model_selection import KFold
+from sklearn.model_selection import KFold, train_test_split
 from sklearn.linear_model import Ridge, RidgeCV, LogisticRegression, LogisticRegressionCV
 from sklearn.ensemble import VotingRegressor, VotingClassifier
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
@@ -98,6 +98,54 @@ class EnsembleTrainer(BaseMLTrainer):
         """Build the ensemble model."""
         self._build_meta_learner(params)
 
+    def _train_model(self, X_train: pd.DataFrame, y_train: np.ndarray):
+        """
+        Train the ensemble model based on ensemble type.
+
+        Args:
+            X_train: Training features
+            y_train: Training target values
+        """
+        if not self.base_models:
+            raise ValueError("No base models added to ensemble. Use add_base_model() first.")
+
+        X_processed = self.preprocess_data(X_train, fit_scaler=True)
+        y_array = y_train
+
+        if self.ensemble_type == 'stacking':
+            # For stacking, train base models and meta-learner
+            self.stacking_strategy(X_train, pd.Series(y_train))
+
+        elif self.ensemble_type == 'blending':
+            # For blending, train with default splits
+            self.blending_strategy(X_train, pd.Series(y_train))
+
+        elif self.ensemble_type == 'voting':
+            # For voting, create and train voting model
+            # First ensure base models are built
+            estimator_list = []
+            for name, base_model in self.base_models.items():
+                if base_model.model is None:
+                    base_model.build_model()
+                estimator_list.append((name, base_model.model))
+
+            if self.task_type == 'regression':
+                self.model = VotingRegressor(estimators=estimator_list)
+            else:  # classification
+                self.model = VotingClassifier(
+                    estimators=estimator_list,
+                    voting='soft'  # Default to soft voting for classification
+                )
+
+            # Train voting model
+            self.model.fit(X_processed, y_array)
+
+            # Also store meta_learner for consistency with other ensemble types
+            self.meta_learner = self.model
+
+        else:
+            raise ValueError(f"Unknown ensemble type: {self.ensemble_type}")
+
     def stacking_strategy(
         self,
         X: pd.DataFrame,
@@ -186,6 +234,7 @@ class EnsembleTrainer(BaseMLTrainer):
 
         # Train meta-learner
         self.meta_learner.fit(X_meta_train, y_meta_train)
+        self.model = self.meta_learner  # Set model attribute for BaseMLTrainer compatibility
 
         # Validate meta-learner
         meta_pred = self._predict_model_meta(X_meta_val)
@@ -284,6 +333,7 @@ class EnsembleTrainer(BaseMLTrainer):
             meta_features_holdout = np.nan_to_num(meta_features_holdout, nan=-999)
 
         self.meta_learner.fit(meta_features_holdout, y_holdout)
+        self.model = self.meta_learner  # Set model attribute for BaseMLTrainer compatibility
 
         # Validate blending
         meta_pred_holdout = self._predict_model_meta(meta_features_holdout)
@@ -377,6 +427,10 @@ class EnsembleTrainer(BaseMLTrainer):
 
         # Train voting model
         voting_model.fit(X_processed, y_array)
+
+        # Save voting model to instance attributes
+        self.model = voting_model
+        self.meta_learner = voting_model  # For consistency with other ensemble types
 
         # Make predictions
         y_pred = voting_model.predict(X_processed)
