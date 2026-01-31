@@ -410,15 +410,20 @@ class EnsembleTrainer(BaseMLTrainer):
         X_processed = self.preprocess_data(X, fit_scaler=True)
         y_array = y.values
 
+        # Ensure base models are built before creating voting model
+        estimator_list = []
+        for name, base_model in self.base_models.items():
+            if base_model.model is None:
+                base_model.build_model()
+            estimator_list.append((name, base_model.model))
+
         if self.task_type == 'regression':
             # Create weighted average voting for regression
-            estimator_list = [(name, base_model.model) for name, base_model in self.base_models.items()]
             voting_model = VotingRegressor(
                 estimators=estimator_list,
                 weights=weights
             )
         else:  # classification
-            estimator_list = [(name, base_model.model) for name, base_model in self.base_models.items()]
             voting_model = VotingClassifier(
                 estimators=estimator_list,
                 voting=voting_type,
